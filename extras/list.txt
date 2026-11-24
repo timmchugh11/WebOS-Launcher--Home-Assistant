@@ -1,0 +1,22 @@
+netflix|Netflix|/media/cryptofs/apps/usr/palm/applications/netflix|LARGE_APP_ICON.png
+youtube.leanback.v4|YouTube|/media/cryptofs/apps/usr/palm/applications/youtube.leanback.v4|yt_lg_130x130.png
+amazon|Prime Video|/media/cryptofs/apps/usr/palm/applications/amazon|aiv_white_130x130.png
+com.disney.disneyplus-prod|Disney+|/media/cryptofs/apps/usr/palm/applications/com.disney.disneyplus-prod|largeIcon.png
+com.apple.appletv|Apple TV|/media/cryptofs/apps/usr/palm/applications/com.apple.appletv|128388699243350331_38663518_130x130_webos.png
+bbc.iplayer.3.0|BBC iPlayer|/media/cryptofs/apps/usr/palm/applications/bbc.iplayer.3.0|bbc_130x130.png
+com.fvp.itv|ITVX|/media/cryptofs/apps/usr/palm/applications/com.fvp.itv|largeIcon.png
+com.fvp.ch4|Channel 4|/media/cryptofs/apps/usr/palm/applications/com.fvp.ch4|largeIcon.png
+demand5|5|/media/cryptofs/apps/usr/palm/applications/demand5|largeIcon.png
+now.tv|NOW|/media/cryptofs/apps/usr/palm/applications/now.tv|74614897546568930_38395052_130x130_webos.png
+tv.twitch.tv.starshot.lg|Twitch|/media/cryptofs/apps/usr/palm/applications/tv.twitch.tv.starshot.lg|TWITCH_APP_ICON.png
+org.jellyfin.webos|Jellyfin|/media/cryptofs/apps/usr/palm/applications/org.jellyfin.webos|assets/icon-130.png
+org.xbmc.kodi|Kodi|/media/developer/apps/usr/palm/applications/org.xbmc.kodi|largeIcon.png
+bbc.sounds.1.0|BBC Sounds|/media/cryptofs/apps/usr/palm/applications/bbc.sounds.1.0|76909674220296420_37071700_130x130_webos.png
+com.webos.app.livetv|Live TV|/usr/palm/applications/com.webos.app.livetv|assets/icon_livetv_80.png
+com.webos.app.hdmi1|HDMI 1|/usr/palm/applications/com.webos.app.hdmi1|icon.png
+com.webos.app.hdmi2|HDMI 2|/usr/palm/applications/com.webos.app.hdmi2|icon.png
+com.webos.app.hdmi3|HDMI 3|/usr/palm/applications/com.webos.app.hdmi3|icon.png
+com.webos.app.hdmi4|HDMI 4|/usr/palm/applications/com.webos.app.hdmi4|icon.png
+com.webos.app.browser|Browser|/media/cryptofs/apps/usr/palm/applications/com.webos.app.browser|$webbrowser_large_icon.png
+org.webosbrew.hbchannel|Homebrew|/media/developer/apps/usr/palm/applications/org.webosbrew.hbchannel|assets/icon130.png
+com.palm.app.settings|Settings|/usr/palm/applications/com.palm.app.settings|icon.png

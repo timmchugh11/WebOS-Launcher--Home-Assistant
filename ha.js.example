@@ -1,0 +1,23 @@
+// Home Assistant settings for the launcher (optional - without this file the battery and light-preset
+// parts simply don't appear).
+//
+// Do NOT put this file in the project or share it: it contains a long-lived access token.
+// Copy it to the TV only, as /var/lib/ha-launcher/ha.js (deploy.sh turns it into the app's config on the TV at install time).
+//
+//  url      your Home Assistant, e.g. http://192.168.1.10:8123 (a ws://.../api/websocket address also works; the
+//           launcher polls it over plain HTTP)
+//  token    a long-lived access token (Home Assistant > your profile > Security > Long-lived access tokens)
+//  sensor   any read-only entity to show top-right: a sensor (battery %, temperature, power, ...), binary_sensor,
+//           input_number, etc. The value and unit come from Home Assistant; a "%" unit also draws a bar, and a
+//           battery-class sensor turns amber/red when low. Leave empty to show nothing there.
+//  label    optional text under the value (default: the entity's friendly name)
+//  preset   a select / input_select entity shown as a row of chips (press OK on one to choose it)
+//  presetLabel  optional text before the chips (default: the preset entity's friendly name from Home Assistant)
+window.HA = {
+  url: "http://HOME_ASSISTANT_IP:8123",
+  token: "PASTE_LONG_LIVED_ACCESS_TOKEN_HERE",
+  sensor: "sensor.your_battery_state_of_charge",
+  label: "",
+  preset: "select.your_light_preset",
+  presetLabel: ""
+};

@@ -1,0 +1,17 @@
+# Home Assistant settings contain a long-lived access token: keep them on the TV only
+ha.js
+*.token
+*.secret
+
+# build output
+*.ipk
+*.deb
+node_modules/
+
+# editors / OS
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+*.swp

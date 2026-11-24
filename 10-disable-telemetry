@@ -1,0 +1,14 @@
+#!/bin/sh
+# Prevent LG logging/reporting/analytics services from running (/ is read-only, so use
+# runtime drop-ins in /run that add an impossible start condition). Undo: delete this file and reboot.
+UNITS="remotelogger service-logger uploadd rdxd nudge contentminer faultmanager"
+for u in $UNITS; do
+  d="/run/systemd/system/$u.service.d"
+  mkdir -p "$d"
+  printf '[Unit]\nConditionPathExists=/nonexistent/webosbrew-disabled\n' > "$d/10-disabled.conf"
+done
+systemctl daemon-reload
+for u in $UNITS; do
+  systemctl stop --no-block "$u.service" >/dev/null 2>&1
+done
+exit 0

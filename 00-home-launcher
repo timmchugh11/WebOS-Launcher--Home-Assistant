@@ -1,0 +1,38 @@
+#!/bin/sh
+# Homebrew init.d hook (runs first): replace the stock Home with our launcher at every boot.
+# - Always puts the Home stand-in in place.
+# - Opens our launcher first (whatever is on screen), then stops the stock Home.
+# Kill switch: touch /var/lib/ha-launcher/home-shim.disabled (and reboot, or run home-shim-off.sh).
+D=/var/lib/ha-launcher
+T() { echo "$(date +%s) up=$(cut -d' ' -f1 /proc/uptime) $1" >> /tmp/home-launcher-boot.log; }
+T "hook start"
+# Guard for our bootd.json override (first app at power-on = our launcher): drop it if the launcher is gone or disabled.
+if [ -f $D/bootd-override.installed ] && { [ -f $D/home-shim.disabled ] || [ ! -d /media/developer/apps/usr/palm/applications/com.ha-launcher.home ]; }; then
+  rm -f /var/luna/preferences/bootd.json $D/bootd-override.installed
+  T "launcher missing/disabled -> removed bootd.json override"
+fi
+[ -x $D/home-shim.sh ] || exit 0
+[ -f $D/home-shim.disabled ] && exit 0
+[ -d /media/developer/apps/usr/palm/applications/com.ha-launcher.home ] || exit 0
+rm -f /tmp/home-shim.times
+awk '$2 ~ /com\.webos\.app\.home$/' /proc/mounts | grep -q . || mount --bind $D/home-shim.sh /usr/bin/com.webos.app.home
+T "mounted"
+# Boot into the launcher whatever is on screen (Live TV, stock Home...). To keep the TV on its last input instead:
+#   touch /var/lib/ha-launcher/no-boot-launch
+if [ -f $D/no-boot-launch ]; then
+  T "no-boot-launch flag set -> leaving screen alone"
+else
+  FG=$(luna-send -n 1 luna://com.webos.service.applicationmanager/getForegroundAppInfo '{}' 2>/dev/null | tr -d '\n ')
+  case "$FG" in
+    *'"appId":"com.ha-launcher.home"'*) T "launcher already in front (opened by bootd) -> not relaunching" ;;
+    *)
+      T "launching ours (fg=$FG)"
+      luna-send -n 1 luna://com.webos.applicationManager/launch '{"id":"com.ha-launcher.home"}' >/dev/null 2>&1
+      T "ours launched"
+      ;;
+  esac
+fi
+P=$(pidof com.webos.app.home)
+[ -n "$P" ] && kill $P
+T "stock home killed pid='$P'"
+exit 0

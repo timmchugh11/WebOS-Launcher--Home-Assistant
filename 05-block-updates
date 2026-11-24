@@ -1,0 +1,24 @@
+#!/bin/sh
+# Extra LG update-server blocks (Homebrew only blocks snu/su/su-ssl/su-dev.lge.com).
+# Undo: delete this file and reboot.
+LOG=/tmp/block-updates.log
+T() { echo "$(date +%s) up=$(cut -d' ' -f1 /proc/uptime) $1" >> $LOG; }
+T "hook start; update daemon running: '$(pidof update)'"
+HOSTS="nsu.lge.com snu-dev.lge.com"
+for h in $HOSTS; do
+  grep -q " $h\b\|$h " /etc/hosts 2>/dev/null || {
+    echo "127.0.0.1 $h" >> /etc/hosts
+    echo "::1 $h" >> /etc/hosts
+  }
+done
+T "hosts blocked: $HOSTS"
+# This kernel has no iptables support, so black-hole the hardcoded update IP with a route instead.
+IP=156.147.69.32
+if ip route show "$IP/32" 2>/dev/null | grep -q blackhole; then
+  T "blackhole route for $IP already present"
+else
+  R=$(ip route add blackhole $IP/32 2>&1)
+  T "blackhole route for $IP: rc=$? $R"
+fi
+T "routes: $(ip route show 2>/dev/null | grep -c blackhole) blackhole"
+exit 0
