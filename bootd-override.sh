@@ -20,7 +20,7 @@ node -e '
 const fs = require("fs");
 const src = "/etc/palm/bootd.json", dst = "/var/luna/preferences/bootd.json", tmp = dst + ".tmp", app = process.argv[1];
 const cfg = JSON.parse(fs.readFileSync(src, "utf8"));
-for (const k of ["remoteKey", "localKey", "upDownKey"]) cfg.common.firstAppByPowerOnReason[k] = app;
+for (const k of ["remoteKey", "localKey", "upDownKey", "micomPower"]) cfg.common.firstAppByPowerOnReason[k] = app;
 fs.writeFileSync(tmp, JSON.stringify(cfg, null, 4));
 JSON.parse(fs.readFileSync(tmp, "utf8"));   // validate what was written before putting it in place
 fs.renameSync(tmp, dst);

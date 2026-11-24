@@ -232,9 +232,12 @@ so the stand-in will be back automatically.
 
 **Good to know**
 
-- **Timing:** Homebrew's boot hook runs about **40-50 seconds after power-on**, and nothing user-controlled
-  runs earlier. So if you press Home in the first ~45 seconds after a cold boot, you'll still get LG's Home
-  until the hook has run. After that it's always the launcher. (Step 3 fixes the power-on case.)
+- **Timing (cold boot only):** LG's Home is preloaded at ~7 s, the launcher is first app from ~30 s (Step 3), and
+  Homebrew's boot hook runs at **~40-50 s**; nothing user-controlled runs earlier (the systemd units are read-only
+  and `bootd.json` can only pick the first app). So a Home press before ~30 s gives LG's Home; from ~30 s to the hook
+  it gives LG's Home briefly (see below); after the hook it's always the launcher. Standby/wake is unaffected.
+  The launcher also watches the foreground app: since it is already running from about 30 s (Step 3), if LG's
+  Home appears it relaunches itself, so you only see LG's Home for about half a second (limited to 30 take-backs a minute, 0.5 s apart).
 - **Kill switch:** `ssh $TV touch /var/lib/ha-launcher/home-shim.disabled` and reboot - the hook then does
   nothing and the stand-in falls back to LG's Home.
 - Everything is logged to `/tmp/home-launcher-boot.log` and `/tmp/home-shim.log` (cleared at reboot).
@@ -274,16 +277,16 @@ at about 40 seconds. To make the TV start **directly in the launcher**, override
 first app:
 
 ```bash
-ssh $TV 'sh -s' < bootd-override.sh          # reads LG's config, changes three keys, validates, installs
+ssh $TV 'sh -s' < bootd-override.sh          # reads LG's config, changes four keys, validates, installs
 ```
 
 What it does: `bootd` (LG's boot manager) reads its config from `/etc/palm/bootd.json`, but prefers
 `/var/luna/preferences/bootd.json` when that exists. The script writes a copy where
-`firstAppByPowerOnReason` -> `remoteKey`, `localKey`, `upDownKey` are the launcher's app id instead of `{LAST_APP}`.
+`firstAppByPowerOnReason` -> `remoteKey`, `localKey`, `upDownKey`, `micomPower` (reboots, power-cord) are the launcher's app id instead of `{LAST_APP}`.
 It keeps a backup of LG's original at `/var/lib/ha-launcher/bootd.json.orig`.
 
-Power the TV off and on **with the remote's power button** (that's the case we tested) and watch:
-you'll see LG's "Launcher Loading..." text (that's LG's own start-up cover using the app's title - it isn't
+Reboot the TV (`ssh $TV reboot`) or pull the power for 10 seconds and watch. (A remote-control power-off only
+puts the TV in standby; powering on from standby is not a cold boot and was never the problem.) You'll see LG's "Launcher Loading..." text (that's LG's own start-up cover using the app's title - it isn't
 part of the app and can't be removed) and then the launcher, ~30 seconds after power-on.
 
 **Risk:** this changes how *every* boot starts. It was tested only on webOS 9.2.1 here (other projects report

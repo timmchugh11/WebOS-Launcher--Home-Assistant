@@ -142,7 +142,17 @@ WebOSWindow {
     Service { id: svcPoints; appId: win.appId; service: "com.webos.service.applicationmanager"; method: "listLaunchPoints"
         onResponse: win.gotPoints(parse(payload)) }
     Service { id: svcFg; appId: win.appId; service: "com.webos.service.applicationmanager"; method: "getForegroundAppInfo"
-        onResponse: { var o = parse(payload); if (o.appId) win.noteFg(o.appId) } }
+        onResponse: { var o = parse(payload); if (o.appId) { win.noteFg(o.appId); win.fgChanged(o.appId) } } }
+    // Cold-boot gap: until the Home stand-in is mounted (about 40 s after power-on) Home opens LG's own Home.
+    // This app is already running by then, so when the foreground becomes LG's Home we take the screen back.
+    property var stealTimes: []
+    function fgChanged(id) {
+        if (id !== "com.webos.app.home") return
+        var now = Date.now(), t = stealTimes.filter(function(x) { return now - x < 60000 })
+        if (t.length >= 30 || (t.length && now - t[t.length - 1] < 500)) return   // loop guard: 0.5 s apart, 30 a minute
+        t.push(now); stealTimes = t
+        svcLaunch.callService({ id: win.appId })
+    }
     function parse(p) { try { return JSON.parse(p) } catch (e) { return {} } }
 
     function launch(a) {
